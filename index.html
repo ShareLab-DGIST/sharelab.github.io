@@ -872,7 +872,8 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
   var TYPE_CLASS = { "저널": "t-j", "학술대회": "t-c", "특허": "t-p" };
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function get(row, prefix) { for (var k in row) { if (k.indexOf(prefix) === 0) return String(row[k] == null ? "" : row[k]).trim(); } return ""; }
+  function escBr(s) { return esc(s).replace(/&lt;br\s*\/?&gt;/gi, "<br>").replace(/\r?\n/g, "<br>"); }
+     function get(row, prefix) { for (var k in row) { if (k.indexOf(prefix) === 0) return String(row[k] == null ? "" : row[k]).trim(); } return ""; }
   function hasHangul(s) { return /[가-힣]/.test(s); }
   function isEx(id) { return /^EX/i.test(id); }
   function exTag(id) { return isEx(id) ? '<span class="ex-tag">예시</span>' : ""; }
@@ -970,7 +971,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
     }
     function contact(p) {
       var e = get(p, "이메일"), t = get(p, "전화번호"), out = [];
-      out.push(e ? '<a href="mailto:' + esc(e) + '">' + esc(e).replace("@", "<wbr>@") + '</a>' : blank("이메일 입력 전"));
+      out.push(e ? '<a href="mailto:' + esc(e) + '">' + esc(e) + '</a>' : blank("이메일 입력 전");
       if (t) out.push(esc(t));
       return out.join("<br>");
     }
@@ -984,9 +985,9 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
         '<div class="photo">' + photo(get(p, "대표 사진"), get(p, "이름") + " 사진", phPerson()) + '</div>' +
         '<div><h3 class="pi-name">' + esc(get(p, "이름")) + '<small>박사</small>' + exTag(id) + '</h3>' +
         (get(p, "영문 이름") ? '<span class="en big">' + esc(get(p, "영문 이름")) + ', Ph.D.</span>' : "") +
-        '<p style="margin-top:10px">' + (get(p, "소개") ? esc(get(p, "소개")) : blank("소개 입력 전")) + '</p>' +
+        '<p style="margin-top:10px">' + (get(p, "소개") ? escBr(get(p, "소개")) : blank("소개 입력 전")) + '</p>' +
         '<p class="pi-motto">로봇 핸드·그리퍼 및 시스템 통합 전문가</p>' +
-        '<dl class="kv"><div><dt>연구 분야</dt><dd>' + (get(p, "연구 분야") ? esc(get(p, "연구 분야")) : blank("입력 전")) + '</dd></div>' +
+        '<dl class="kv"><div><dt>연구 분야</dt><dd>' + (get(p, "연구 분야") ? escBr(get(p, "연구 분야")) : blank("입력 전")) + '</dd></div>' +
         '<div><dt>연락처</dt><dd>' + contact(p) + '</dd></div>' +
         '<div><dt>연구 실적</dt><dd><a href="#publications">논문 ' + c.papers + '편, 특허 ' + c.patents + '건</a></dd></div></dl>' +
         '<div class="pi-links"><a href="https://scholar.google.co.kr/citations?user=bmGTi6YAAAAJ">Google Scholar</a>' +
@@ -1001,7 +1002,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
         '<div class="body"><h5>' + esc(get(p, "이름")) + exTag(id) + '</h5>' +
         (get(p, "영문 이름") ? '<span class="en">' + esc(get(p, "영문 이름")) + '</span>' : '<span class="en">' + blank("영문 이름") + '</span>') +
         '<p class="role">' + esc(get(p, "신분")) + '</p>' +
-        '<p class="area">' + (get(p, "연구 분야") ? esc(get(p, "연구 분야")) : blank("연구 분야 입력 전")) + '</p>' +
+        '<p class="area">' + (get(p, "연구 분야") ? escBr(get(p, "연구 분야")) : blank("연구 분야 입력 전")) + '</p>' +
         '<p class="contact">' + contact(p) + '</p>' + workSummary(id) + '</div></article>';
     }
     var groups = ROLE_ORDER.map(function (role) {
@@ -1020,7 +1021,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
           var id = get(p, "ID");
           return '<tr id="person-' + esc(id) + '"><td><span class="who"><span class="mini">' + photo(get(p, "대표 사진"), "", phPerson()) + '</span><span>' + esc(get(p, "이름")) + exTag(id) + '</span></span></td>' +
             '<td>' + esc(get(p, "신분").replace("졸업", "")) + '</td><td class="n">' + (esc(get(p, "졸업 연도")) || blank("-")) + '</td>' +
-            '<td>' + (esc(get(p, "연구 분야")) || blank("-")) + '</td><td>' + (esc(get(p, "현재 소속")) || blank("-")) + '</td></tr>';
+            '<td>' + (escBr(get(p, "연구 분야")) || blank("-")) + '</td><td>' + (esc(get(p, "현재 소속")) || blank("-")) + '</td></tr>';
         }).join("") + '</tbody></table></div>'
       : '<p class="empty">졸업생 정보를 정리하고 있습니다.</p>';
 
@@ -1044,7 +1045,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
         '<div class="paper-body"><div class="paper-fig">' + photo(get(w, "대표 사진"), title, phPaper(type)) + '</div><div>' +
         '<div class="chips"><span class="chip ' + (TYPE_CLASS[type] || "") + '">' + esc(type || "구분 없음") + '</span><span class="chip yr">' + esc(year) + '</span>' +
         (get(w, "비고") ? '<span class="chip">' + esc(get(w, "비고")) + '</span>' : "") + '</div>' +
-        '<p class="abstract">' + (get(w, "요약") ? esc(get(w, "요약")) : blank("요약 입력 전")) + '</p>' +
+        '<p class="abstract">' + (get(w, "요약") ? escBr(get(w, "요약")) : blank("요약 입력 전")) + '</p>' +
         '<p class="pauth">' + (type === "특허" ? "발명자 " : "") + authors + '</p>' +
         '<p class="pvenue"><i>' + esc(get(w, "저널")) + '</i>' + (get(w, "권") ? ", " + esc(get(w, "권")) : "") + '</p>' +
         (linkHtml ? '<p class="plinks">' + linkHtml + '</p>' : "") + '</div></div></article>';
@@ -1064,7 +1065,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
       return '<article class="eq-card" id="equip-' + esc(id) + '"><div class="photo">' + photo(get(e, "대표 사진"), get(e, "장비 이름"), phEquip(get(e, "분류"))) + '</div>' +
         '<div class="body"><h4><span>' + esc(get(e, "장비 이름")) + exTag(id) + '</span>' + (qty ? '<span class="qty">' + esc(qty) + '대</span>' : "") + '</h4>' +
         '<p class="maker">' + [get(e, "분류"), get(e, "제조사"), get(e, "모델")].filter(Boolean).map(esc).join(", ") + '</p>' +
-        '<p class="spec">' + (get(e, "대략적인 스펙") ? esc(get(e, "대략적인 스펙")) : blank("스펙 입력 전")) + '</p>' +
+        '<p class="spec">' + (get(e, "대략적인 스펙") ? escBr(get(e, "대략적인 스펙")) : blank("스펙 입력 전")) + '</p>' +
         '<dl class="kv"><div><dt>구매 일자</dt><dd>' + (get(e, "구매 일자") ? esc(get(e, "구매 일자")) : blank("입력 전")) + '</dd></div>' +
         '<div><dt>담당자</dt><dd>' + manager + '</dd></div>' +
         (get(e, "위치") ? '<div><dt>위치</dt><dd>' + esc(get(e, "위치")) + '</dd></div>' : "") +
