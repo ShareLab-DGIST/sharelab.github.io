@@ -264,7 +264,7 @@ p { margin: 0; }
 .kv dd { margin: 0; }
 .pi-cv { margin-left: 260px; }
 
-.mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; margin-top: 20px; }
 .mgroup + .mgroup { margin-top: 28px; }
 .mgroup h4 { font-size: 0.98rem; font-weight: 700; color: var(--navy); }
 .mcard { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; scroll-margin-top: 90px; }
@@ -276,7 +276,7 @@ p { margin: 0; }
 .mcard .en { font-size: 0.86rem; }
 .mcard .role { font-size: 0.9rem; color: var(--navy); font-weight: 600; margin-top: 2px; }
 .mcard .area { font-size: 0.9rem; margin-top: 6px; }
-.mcard .contact { font-size: 0.86rem; margin-top: 6px; overflow-wrap: anywhere; }
+.mcard .contact { font-size: 0.86rem; margin-top: 6px; overflow-wrap: normal; word-break: normal; }
 .mcard details { margin-top: 10px; font-size: 0.86rem; border-top: 1px solid var(--line); padding-top: 8px; }
 .mcard summary { cursor: pointer; color: var(--muted); }
 .mcard details ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
@@ -970,7 +970,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
     }
     function contact(p) {
       var e = get(p, "이메일"), t = get(p, "전화번호"), out = [];
-      out.push(e ? '<a href="mailto:' + esc(e) + '">' + esc(e) + '</a>' : blank("이메일 입력 전"));
+      out.push(e ? '<a href="mailto:' + esc(e) + '">' + esc(e).replace("@", "<wbr>@") + '</a>' : blank("이메일 입력 전"));
       if (t) out.push(esc(t));
       return out.join("<br>");
     }
