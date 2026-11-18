@@ -872,7 +872,7 @@ footer h2 { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
   var TYPE_CLASS = { "저널": "t-j", "학술대회": "t-c", "특허": "t-p" };
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function escBr(s) { return esc(s).replace(/&lt;br\s*\/?&gt;/gi, "<br>").replace(/\r?\n/g, "<br>"); }
+  function escBr(s) { return esc(s).replace(/&lt;br\s*\/?&gt;/gi, "<br>").replace(/\r?\n/g, "<br>").replace(/\^(-?\d+)/g, '<sup style="line-height:0">$1</sup>'); }
   function get(row, prefix) { for (var k in row) { if (k.indexOf(prefix) === 0) return String(row[k] == null ? "" : row[k]).trim(); } return ""; }
   function hasHangul(s) { return /[가-힣]/.test(s); }
   function isEx(id) { return /^EX/i.test(id); }
